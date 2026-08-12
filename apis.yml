@@ -12,14 +12,19 @@ accessModel:
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/strikead.png
 name: StrikeAd
-description: StrikeAd was a mobile advertising technology company surfaced as a portfolio
-  company of Uncork Capital and added to the API Evangelist network as an enrichment lead.
-  As of this enrichment pass its primary domain (strikead.com) resolves to a parked lander
-  page rather than an active product or developer surface - every path, including the homepage,
-  /.well-known/ discovery endpoints, and common API paths, returns the same domain-parking
-  redirect to /lander. No developer portal, API documentation, OpenAPI definition, or other
-  machine-readable API surface could be found, indicating the company is no longer operating
-  an active public API.
+description: StrikeAd was a mobile advertising technology company, founded in New York City
+  in 2010 and backed by Uncork Capital, that built Fusion - one of the first demand-side
+  platforms (DSPs) built specifically for mobile programmatic advertising. Sizmek Inc.
+  completed its acquisition of StrikeAd for approximately $11.7 million in May 2015 and
+  folded the platform into Sizmek MDX; Sizmek itself was subsequently broken up, with its
+  ad server going to Amazon and its DSP and DMP to Zeta Global. The StrikeAd brand no
+  longer operates. Its primary domain (strikead.com) is now a parked domain on GoDaddy
+  nameservers that answers every request - homepage, /.well-known/ discovery paths, and
+  common contract paths alike - with the same 114-byte HTML lander redirect to /lander,
+  confirmed against a negative-control path. The api., docs. and developer. subdomains do
+  not resolve, and the github.com/strikead organization is named "ex-StrikeAd" and has
+  zero public repositories. No developer portal, API documentation, OpenAPI definition,
+  or other machine-readable API surface exists.
 url: https://raw.githubusercontent.com/api-evangelist/strikead/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -27,9 +32,11 @@ x-backed-by:
 - uncork-capital
 x-tier: stub
 x-tier-reason: portfolio-lead
+x-acquired-by: sizmek
+x-acquired-date: '2015-05-28'
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-21'
+modified: '2026-08-12'
 tags:
 - Company
 - Advertising
@@ -44,7 +51,27 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 x-enrichment:
-  date: '2026-07-21'
-  status: nochange
-  artifacts_added: 0
+  date: '2026-08-12'
+  status: minimal
+  artifacts_added: 1
   pass: local-v1
+x-coverage:
+  state: none
+  reason: defunct
+  detail: >-
+    StrikeAd was acquired by Sizmek in May 2015 and the brand was retired; strikead.com is
+    now a GoDaddy-parked domain whose catch-all responder returns the identical 114-byte
+    /lander HTML for every path - including a nonsense negative-control path - so its 200s
+    on /.well-known/ and /openapi.json are parking shells, not documents.
+  evidence:
+  - url: https://strikead.com/this-path-does-not-exist-12345
+    status: 200
+  - url: https://strikead.com/.well-known/agent-card.json
+    status: 200
+  - url: https://strikead.com/openapi.json
+    status: 200
+  - url: https://api.strikead.com/
+    status: 0
+  - url: https://api.github.com/orgs/strikead
+    status: 200
+  checked: '2026-08-12'

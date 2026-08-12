@@ -1,0 +1,130 @@
+generated: '2026-08-12'
+method: probed
+source: live probes of /.well-known/ and common contract paths on strikead.com
+note: >-
+  NO DOCUMENTS FOUND. strikead.com is a parked domain served from GoDaddy
+  nameservers (ns71/ns72.domaincontrol.com) with a catch-all responder: EVERY
+  path returns the identical 114-byte HTML lander
+  (<script>window.location.href="/lander"</script>) with HTTP 200 and
+  Content-Type: text/html. A deliberate negative-control probe of
+  /this-path-does-not-exist-12345 returned the same 200 + same 114 bytes,
+  proving the 200s are a soft-200 catch-all and NOT served documents.
+  Therefore no WellKnown or SecurityTxt pointer is emitted in apis.yml —
+  a 200 that returns an HTML parking shell is not a document.
+  The single non-HTML response, /llms.txt, returns 65 bytes of robots.txt
+  directives ("User-agent: * / Allow: / / Disallow-Training: / / Sitemap:")
+  emitted by the parking provider, not an llms.txt index of the company's
+  documentation; it is recorded here and NOT saved as an LLMsTxt artifact.
+  Subdomains api., docs. and developer.strikead.com do not resolve at all.
+soft_200_catch_all: true
+negative_control:
+  path: /this-path-does-not-exist-12345
+  status: 200
+  content_type: text/html
+  bytes: 114
+  conclusion: >-
+    Identical response to every probed path — all 200s below are the parking
+    lander, not documents.
+hosts:
+  - host: https://strikead.com
+    resolves: true
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html), not a security.txt
+      - path: /.well-known/openid-configuration
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /.well-known/api-catalog
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /.well-known/agent-card.json
+        status: 200
+        result: miss
+        detail: >-
+          114-byte parking lander (text/html); does not parse as a JSON object
+          and carries none of name/url/version/protocolVersion/capabilities/skills.
+          No AgentCard pointer emitted.
+      - path: /.well-known/agent.json
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html); legacy pre-0.3 agent card path
+      - path: /openapi.json
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html), not OpenAPI
+      - path: /openapi.yaml
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /swagger.json
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /v1/openapi.json
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /api-docs
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /docs
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /redoc
+        status: 200
+        result: miss
+        detail: 114-byte parking lander (text/html)
+      - path: /graphql
+        status: 200
+        result: miss
+        detail: >-
+          114-byte parking lander (text/html); no GraphQL endpoint, introspection
+          not attempted against a static HTML responder
+      - path: /llms.txt
+        status: 200
+        result: miss
+        detail: >-
+          65 bytes of robots.txt directives emitted by the parking provider, not an
+          llms.txt documentation index. Not saved as an LLMsTxt artifact.
+      - path: /robots.txt
+        status: 200
+        result: miss
+        detail: >-
+          Parking-provider robots.txt ("Allow: /", "LLM-Policy: /llms.txt").
+          Not a company-authored file.
+  - host: https://api.strikead.com
+    resolves: false
+    documents: []
+    detail: NXDOMAIN / no connection (curl exit 6, HTTP 000)
+  - host: https://docs.strikead.com
+    resolves: false
+    documents: []
+    detail: NXDOMAIN / no connection (curl exit 6, HTTP 000)
+  - host: https://developer.strikead.com
+    resolves: false
+    documents: []
+    detail: NXDOMAIN / no connection (curl exit 6, HTTP 000)
+pointers_emitted: []
+pointer_rationale: >-
+  Zero pointers. Per the pipeline rule, a WellKnown/SecurityTxt/AgentCard/LLMsTxt
+  pointer asserts that the PROVIDER serves that surface. Every 200 recorded here is
+  a domain-parking catch-all, so emitting any pointer would score an absence as a
+  presence.
